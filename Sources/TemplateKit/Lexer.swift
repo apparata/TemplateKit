@@ -1,3 +1,6 @@
+//
+//  Copyright © 2019 Apparata AB. All rights reserved.
+//
 
 import Foundation
 
@@ -12,7 +15,7 @@ public enum Tag {
     case `if`(variable: String)
     case `for`(variable: String, sequence: String)
     case end
-    case variable(String)
+    case variable(String, transformers: [String])
 }
 
 public class Lexer {

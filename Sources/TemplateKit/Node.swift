@@ -1,3 +1,6 @@
+//
+//  Copyright © 2019 Apparata AB. All rights reserved.
+//
 
 import Foundation
 
@@ -15,9 +18,11 @@ public class TextNode: Node {
 
 public class VariableNode: Node {
     let variable: String
+    let transformers: [String]
     
-    public init(variable: String) {
+    public init(variable: String, transformers: [String]) {
         self.variable = variable
+        self.transformers = transformers
     }
 }
 

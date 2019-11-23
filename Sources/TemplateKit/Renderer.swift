@@ -1,3 +1,6 @@
+//
+//  Copyright © 2019 Apparata AB. All rights reserved.
+//
 
 import Foundation
 
@@ -15,7 +18,20 @@ public class Renderer {
         return try renderParts(nodes: nodes, context: context).joined()
     }
     
-    private func renderParts(nodes: [Node], context: [String: Any?]) throws -> [String] {
+    private func renderParts(nodes: [Node], context userContext: [String: Any?]) throws -> [String] {
+        
+        var context: [String: Any?] = [
+            "lowercased": Transformers.lowercased,
+            "uppercased": Transformers.uppercased,
+            "uppercasingFirstLetter": Transformers.uppercasingFirstLetter,
+            "lowercasingFirstLetter": Transformers.lowercasingFirstLetter,
+            "trimmed": Transformers.trimmed,
+            "removingWhitespace": Transformers.removingWhitespace,
+            "collapsingWhitespace": Transformers.removingWhitespace
+        ]
+        for (key, value) in userContext {
+            context[key] = value
+        }
         
         var parts: [String] = []
         
@@ -23,7 +39,13 @@ public class Renderer {
             if let textNode = node as? TextNode {
                 parts.append(textNode.text)
             } else if let variableNode = node as? VariableNode {
-                if let part = context[variableNode.variable]?.flatMap({ "\($0)" }) {
+                var value: Any? = context[variableNode.variable] ?? nil
+                for transformID in variableNode.transformers {
+                    if let transform = context[transformID] as? ((Any?) -> Any?) {
+                        value = transform(value)
+                    }
+                }
+                if let part = value.flatMap({ "\($0)" }) {
                     parts.append(part)
                 }
             } else if let ifNode = node as? IfNode {

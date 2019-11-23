@@ -39,3 +39,13 @@ let context: [String: Any?] = [
 
 try template.render(context: context)
 ```
+
+## Built-in Transformers
+
+- `#lowercased`
+- `#uppercased`
+- `#uppercasingFirstLetter`
+- `#lowercasingFirstLetter`
+- `#trimmed`
+- `#removingWhitespace`
+- `#collapsingWhitespace`

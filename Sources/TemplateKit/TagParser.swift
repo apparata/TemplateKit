@@ -1,3 +1,6 @@
+//
+//  Copyright © 2019 Apparata AB. All rights reserved.
+//
 
 import Foundation
 
@@ -103,6 +106,9 @@ public class TagParser {
 
     private func scanVariable(_ scanner: Scanner) throws -> Tag? {
         let backtrackIndex = scanner.currentIndex
+        
+        let transformers = try scanTransformers(scanner)
+        
         guard let variable = scanIdentifier(scanner) else {
             scanner.currentIndex = backtrackIndex
             return nil
@@ -111,7 +117,24 @@ public class TagParser {
         guard scanner.isAtEnd else {
             throw Error.invalidTag(index: backtrackIndex)
         }
-        return .variable(variable)
+        return .variable(variable, transformers: transformers)
+    }
+    
+    private func scanTransformers(_ scanner: Scanner) throws -> [String] {
+        
+        let backtrackIndex = scanner.currentIndex
+        
+        var transformers: [String] = []
+        
+        while scanner.scanString("#") != nil {
+            guard let transformer = scanIdentifier(scanner) else {
+                throw Error.invalidTag(index: backtrackIndex)
+            }
+            transformers.append(transformer)
+            scanWhiteSpace(scanner)
+        }
+        
+        return transformers
     }
     
     @discardableResult

@@ -1,3 +1,6 @@
+//
+//  Copyright © 2019 Apparata AB. All rights reserved.
+//
 
 import Foundation
 
@@ -35,8 +38,8 @@ public class Parser {
                 
             case .tag(let tag):
                 switch tag {
-                case .variable(let variable):
-                    let node = VariableNode(variable: variable)
+                case .variable(let variable, let transformers):
+                    let node = VariableNode(variable: variable, transformers: transformers)
                     nodes.append(node)
                     i += 1
                 case .if(_):

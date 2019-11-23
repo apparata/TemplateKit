@@ -18,7 +18,7 @@ final class TemplateKitTests: XCTestCase {
 
         let template: Template = """
         This is a test.
-        {{ whatever }}
+        {{ #lowercased whatever }}
         So is this.
         {{ stuff }}
         Whatever
@@ -37,7 +37,11 @@ final class TemplateKitTests: XCTestCase {
         {{ for fruit in fruits }}Fruit name: {{ car }} {{ end }}
         """
             
-        XCTAssertNoThrow(try template.render(context: context))
+        XCTAssertNoThrow(try {
+            let result = try template.render(context: context)
+            print(result)
+        }())
+        
     }
 
     static var allTests = [
