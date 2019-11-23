@@ -26,6 +26,8 @@ public class TagParser {
             return tag
         } else if let tag = try scanFor(scanner) {
             return tag
+        } else if let tag = try scanElse(scanner) {
+            return tag
         } else if let tag = try scanEnd(scanner) {
             return tag
         } else if let tag = try scanVariable(scanner) {
@@ -92,6 +94,18 @@ public class TagParser {
         return .for(variable: variable, sequence: sequence)
     }
 
+    private func scanElse(_ scanner: Scanner) throws -> Tag? {
+        let backtrackIndex = scanner.currentIndex
+        guard scanner.scanString("else") != nil else {
+            return nil
+        }
+        scanWhiteSpace(scanner)
+        guard scanner.isAtEnd else {
+            throw Error.invalidTag(index: backtrackIndex)
+        }
+        return .else
+    }
+    
     private func scanEnd(_ scanner: Scanner) throws -> Tag? {
         let backtrackIndex = scanner.currentIndex
         guard scanner.scanString("end") != nil else {

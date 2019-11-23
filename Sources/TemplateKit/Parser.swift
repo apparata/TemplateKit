@@ -50,6 +50,14 @@ public class Parser {
                     let (node, newIndex) = try parseFor(tokens, index: i, level: level + 1)
                     nodes.append(node)
                     i = newIndex
+                case .else:
+                    if level == 0 {
+                        throw Error.unbalancedIfOrFor(index: i)
+                    }
+                    let (node, newIndex) = try parseElse(tokens, index: i, level: level + 1)
+                    nodes.append(node)
+                    i = newIndex
+                    return (nodes: nodes, index: i)
                 case .end:
                     if level == 0 {
                         throw Error.unbalancedIfOrFor(index: i)
@@ -92,6 +100,23 @@ public class Parser {
         i = newIndex
         
         return (IfNode(variable: variable, children: nodes), i)
+    }
+    
+    private func parseElse(_ tokens: [Token], index: Int, level: Int) throws -> (ElseNode, Int) {
+        
+        var i = index
+        
+        let token = tokens[i]
+        guard case .tag(let tag) = token,
+            case .else = tag else {
+            throw Error.unexpectedToken(token)
+        }
+        i += 1
+        
+        let (nodes, newIndex) = try parse(tokens, index: i, level: level)
+        i = newIndex
+        
+        return (ElseNode(children: nodes), i)
     }
     
     private func parseFor(_ tokens: [Token], index: Int, level: Int) throws -> (ForNode, Int) {
@@ -164,7 +189,7 @@ public class Parser {
     
     private func isTagNewlineSensitive(_ tag: Tag) -> Bool {
         switch tag {
-        case .if(_), .for(_, _), .end: return true
+        case .if(_), .for(_, _), .else, .end: return true
         case .variable(_): return false
         }
     }

@@ -36,6 +36,14 @@ public class IfNode: Node {
     }
 }
 
+public class ElseNode: Node {
+    let children: [Node]
+    
+    public init(children: [Node]) {
+        self.children = children
+    }
+}
+
 public class ForNode: Node {
     let variable: String
     let sequence: String
