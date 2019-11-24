@@ -42,6 +42,7 @@ public class TagParser {
         guard scanner.scanString("if") != nil else {
             return nil
         }
+        
         guard scanWhiteSpace(scanner) != nil else {
             if scanner.isAtEnd {
                 throw Error.invalidTag(index: backtrackIndex)
@@ -49,14 +50,31 @@ public class TagParser {
             scanner.currentIndex = backtrackIndex
             return nil
         }
-        guard let variable = scanIdentifier(scanner) else {
-            throw Error.invalidTag(index: backtrackIndex)
+        
+        var conditionalTokens: [ConditionalToken] = []
+        while !scanner.isAtEnd {
+            if scanKeyword(scanner, keyword: "or") != nil {
+                conditionalTokens.append(.or)
+            } else if scanKeyword(scanner, keyword: "and") != nil {
+                conditionalTokens.append(.and)
+            } else if scanKeyword(scanner, keyword: "not") != nil {
+                conditionalTokens.append(.not)
+            } else if scanner.scanString("(") != nil {
+                conditionalTokens.append(.startParenthesis)
+            } else if scanner.scanString(")") != nil {
+                conditionalTokens.append(.endParenthesis)
+            } else if let variable = scanIdentifier(scanner) {
+                conditionalTokens.append(.terminal(variable: variable))
+            } else {
+                throw Error.invalidTag(index: backtrackIndex)
+            }
+            scanWhiteSpace(scanner)
         }
-        scanWhiteSpace(scanner)
-        guard scanner.isAtEnd else {
-            throw Error.invalidTag(index: backtrackIndex)
-        }
-        return .if(variable: variable)
+
+        let conditionParser = ConditionParser()
+        let condition = try conditionParser.parse(conditionalTokens)
+        
+        return .if(condition: condition)
     }
     
     private func scanFor(_ scanner: Scanner) throws -> Tag? {
@@ -160,4 +178,17 @@ public class TagParser {
         let characters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "_"))
         return scanner.scanCharacters(from: characters)
     }
+
+    private func scanKeyword(_ scanner: Scanner, keyword: String) -> String? {
+        let backtrackIndex = scanner.currentIndex
+        let characters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "_"))
+        guard let string = scanner.scanCharacters(from: characters), string == keyword else {
+            scanner.currentIndex = backtrackIndex
+            return nil
+        }
+        return keyword
+    }
+
 }
+
+

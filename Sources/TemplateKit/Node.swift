@@ -27,11 +27,11 @@ public class VariableNode: Node {
 }
 
 public class IfNode: Node {
-    let variable: String
+    let condition: ConditionalExpression
     let children: [Node]
     
-    public init(variable: String, children: [Node]) {
-        self.variable = variable
+    public init(condition: ConditionalExpression, children: [Node]) {
+        self.condition = condition
         self.children = children
     }
 }

@@ -54,10 +54,24 @@ final class TemplateKitTests: XCTestCase {
     
     func testExampleIf() {
         let context: [String: Any?] = [
-            "thing": false
+            "thing": true
         ]
 
         let template: Template = "{{ if thing }}Is True{{ end }}"
+            
+        XCTAssertNoThrow(try {
+            let result = try template.render(context: context)
+            print(result)
+        }())
+    }
+
+    func testExampleIfNot() {
+        let context: [String: Any?] = [
+            "thing": false,
+            "otherThing": true
+        ]
+
+        let template: Template = "{{ if not (thing and otherThing) }}Is True{{ end }}"
             
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)

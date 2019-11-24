@@ -49,21 +49,9 @@ public class Renderer {
                     parts.append(part)
                 }
             } else if let ifNode = node as? IfNode {
-                if let value: Any = context[ifNode.variable]?.flatMap({ $0 }) {
-                    if let booleanValue = value as? Bool {
-                        if booleanValue {
-                            parts.append(contentsOf: try renderParts(nodes: ifNode.children,
-                                                                     context: context))
-                        } else {
-                            if let elseNode = ifNode.children.first(where: { node in node is ElseNode }) as? ElseNode {
-                                parts.append(contentsOf: try renderParts(nodes: elseNode.children,
-                                                                         context: context))
-                            }
-                        }
-                    } else {
-                        parts.append(contentsOf: try renderParts(nodes: ifNode.children,
-                                                                 context: context))
-                    }
+                if ifNode.condition.evaluate(with: context) {
+                    parts.append(contentsOf: try renderParts(nodes: ifNode.children,
+                                                             context: context))
                 } else {
                     if let elseNode = ifNode.children.first(where: { node in node is ElseNode }) as? ElseNode {
                         parts.append(contentsOf: try renderParts(nodes: elseNode.children,

@@ -91,7 +91,7 @@ public class Parser {
         
         let token = tokens[i]
         guard case .tag(let tag) = token,
-            case .if(let variable) = tag else {
+            case .if(let condition) = tag else {
             throw Error.unexpectedToken(token)
         }
         i += 1
@@ -99,7 +99,7 @@ public class Parser {
         let (nodes, newIndex) = try parse(tokens, index: i, level: level)
         i = newIndex
         
-        return (IfNode(variable: variable, children: nodes), i)
+        return (IfNode(condition: condition, children: nodes), i)
     }
     
     private func parseElse(_ tokens: [Token], index: Int, level: Int) throws -> (ElseNode, Int) {

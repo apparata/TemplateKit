@@ -12,11 +12,20 @@ public enum Token {
 }
 
 public enum Tag {
-    case `if`(variable: String)
+    case `if`(condition: ConditionalExpression)
     case `for`(variable: String, sequence: String)
     case `else`
     case end
     case variable(String, transformers: [String])
+}
+
+public enum ConditionalToken {
+    case not
+    case and
+    case or
+    case startParenthesis
+    case endParenthesis
+    case terminal(variable: String)
 }
 
 public class Lexer {
