@@ -9,6 +9,7 @@ public indirect enum ConditionalExpression {
     case and([ConditionalExpression])
     case not(ConditionalExpression)
     case terminal(variable: String)
+    case terminalEqualsString(variable: String, string: String)
 }
 
 public extension ConditionalExpression {
@@ -41,6 +42,16 @@ public extension ConditionalExpression {
                     return booleanValue
                 } else {
                     return true
+                }
+            }
+            return false
+            
+        case .terminalEqualsString(let variable, let string):
+            if let value: Any = context[variable]?.flatMap({ $0 }) {
+                if let stringValue = value as? String {
+                    return stringValue == string
+                } else {
+                    return false
                 }
             }
             return false

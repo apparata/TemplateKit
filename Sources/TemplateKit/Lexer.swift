@@ -26,6 +26,8 @@ public enum ConditionalToken {
     case startParenthesis
     case endParenthesis
     case terminal(variable: String)
+    case string(String)
+    case equalityOperator
 }
 
 public class Lexer {

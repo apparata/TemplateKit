@@ -63,6 +63,16 @@ public class TagParser {
                 conditionalTokens.append(.startParenthesis)
             } else if scanner.scanString(")") != nil {
                 conditionalTokens.append(.endParenthesis)
+            } else if scanner.scanString("==") != nil {
+                conditionalTokens.append(.equalityOperator)
+            } else if scanner.scanString("\"") != nil {
+                guard let string = scanner.scanUpToString("\"") else {
+                    throw Error.invalidTag(index: backtrackIndex)
+                }
+                guard scanner.scanString("\"") != nil else {
+                    throw Error.invalidTag(index: backtrackIndex)
+                }
+                conditionalTokens.append(.string(string))
             } else if let variable = scanIdentifier(scanner) {
                 conditionalTokens.append(.terminal(variable: variable))
             } else {

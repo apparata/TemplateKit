@@ -4,6 +4,16 @@
 
 import Foundation
 
+
+/*
+
+expr      := term ('OR' term)*
+term      := factor ('AND' factor)*
+factor    := 'NOT'? ( statement | '(' expr ')' )
+statement := terminal ( '==' string )?
+
+*/
+
 public class ConditionParser {
     
     public enum Error: Swift.Error {
@@ -102,7 +112,7 @@ public class ConditionParser {
         
         case .startParenthesis:
             i += 1
-            guard let (condition, newIndex) = try parseExpr(tokens, index: i, level: i + 1) else {
+            guard let (condition, newIndex) = try parseExpr(tokens, index: i, level: level + 1) else {
                 throw Error.parseConditionalFailed
             }
             i = newIndex
@@ -116,16 +126,47 @@ public class ConditionParser {
                 return (condition: condition, index: i)
             }
             
-        case .terminal(let variable):
-            i += 1
+        case .terminal(_):
+            
+            guard let (condition, newIndex) = try parseStatement(tokens, index: i, level: level + 1) else {
+                throw Error.parseConditionalFailed
+            }
+            
+            i = newIndex
             if shouldInvert {
-                return (condition: .not(.terminal(variable: variable)), index: i)
+                return (condition: .not(condition), index: i)
             } else {
-                return (condition: .terminal(variable: variable), index: i)
+                return (condition: condition, index: i)
             }
         
         default:
             throw Error.parseConditionalFailed
         }
+    }
+    
+    private func parseStatement(_ tokens: [ConditionalToken], index: Int, level: Int) throws -> (condition: ConditionalExpression, index: Int)? {
+
+        var i = index
+        
+        guard case let .terminal(variable) = tokens[i] else {
+            throw Error.parseConditionalFailed
+        }
+        i += 1
+        
+        if case .equalityOperator = tokens[i] {
+            
+            i += 1
+            
+            guard case .string(let string) = tokens[i] else {
+                throw Error.parseConditionalFailed
+            }
+            i += 1
+            
+            return (condition: .terminalEqualsString(variable: variable, string: string), index: i)
+            
+        } else {
+            return (condition: .terminal(variable: variable), index: i)
+        }
+
     }
 }
