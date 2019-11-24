@@ -153,6 +153,10 @@ public class ConditionParser {
         }
         i += 1
         
+        if i == tokens.count {
+            return (condition: .terminal(variable: variable), index: i)
+        }
+        
         if case .equalityOperator = tokens[i] {
             
             i += 1
