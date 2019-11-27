@@ -146,7 +146,10 @@ banan {
             "banana": "hej"
         ]
             
-        let template: Template = "< banana >"
+        let template: Template = """
+<banana>
+<gurka>
+"""
         
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)

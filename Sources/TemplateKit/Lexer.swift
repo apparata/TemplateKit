@@ -99,10 +99,18 @@ public class Lexer {
         }
         
         var scannedText = scanner.scanUpToCharacters(from: CharacterSet(charactersIn: "\n\(firstTagCharacter)"))
-            
+        
+        let index = scanner.currentIndex
+        
         if scannedText == nil {
-            if scanner.currentIndex != scanner.string.startIndex {
-                scannedText = nil
+            if scanner.isAtEnd {
+                return nil
+            } else if scanner.scanString("\n") != nil {
+                scanner.currentIndex = index
+                return .whitespace("")
+            } else if scanner.scanString(configuration.tagStart) != nil {
+                scanner.currentIndex = index
+                return .whitespace("")
             } else {
                 scannedText = ""
             }
@@ -119,7 +127,6 @@ public class Lexer {
                 return .text(text)
             }
         }
-        let index = scanner.currentIndex
         if scanner.scanString("\n") != nil {
             scanner.currentIndex = index
             if isWhitespaceOnly(text) {
