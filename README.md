@@ -5,23 +5,23 @@ Example:
 ```Swift
 let template: Template = """
 This is a test.
-{{ whatever }}
+<{ whatever }>
 So is this.
-{{ stuff }}
+<{ stuff }>
 Whatever
-{{ if potato }}
+<{ if potato }>
     Only if potato is true.
-    {{ if cucumber }}
+    <{ if cucumber }>
         Only if both potato and cucumber are true.
-    {{ end }}
-{{ end }}
+    <{ end }>
+<{ end }>
 Here are some types of fruits:
-{{ for fruit in fruits }}
-Fruit name: {{ fruit }}
-{{ end }}
+<{ for fruit in fruits }>
+Fruit name: <{ fruit }>
+<{ end }>
 
 Here they are again:
-{{ for fruit in fruits }}Fruit name: {{ car }} {{ end }}
+<{ for fruit in fruits }>Fruit name: <{ car }> <{ end }>
 """
 
 let context: [String: Any?] = [

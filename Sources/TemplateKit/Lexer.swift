@@ -40,8 +40,8 @@ public class Lexer {
         public let tagStart: String
         public let tagEnd: String
         
-        public init(tagStart: String = "{{",
-                    tagEnd: String = "}}") {
+        public init(tagStart: String = "<{",
+                    tagEnd: String = "}>") {
             self.tagStart = tagStart
             self.tagEnd = tagEnd
         }

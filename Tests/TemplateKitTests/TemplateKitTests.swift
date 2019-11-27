@@ -19,30 +19,30 @@ final class TemplateKitTests: XCTestCase {
 
         let template: Template = """
         This is a test.
-        {{ #lowercased whatever }}
+        <{ #lowercased whatever }>
         So is this.
-        {{ stuff }}
+        <{ stuff }>
         Whatever
-        {{ if potato }}
+        <{ if potato }>
             Only if potato is true.
-            {{ if cucumber }}
+            <{ if cucumber }>
                 Only if both potato and cucumber are true.
-            {{ end }}
-        {{ end }}
-        {{ if otherThing }}
+            <{ end }>
+        <{ end }>
+        <{ if otherThing }>
             Only if otherThing is true.
-        {{ else }}
-            {{ if cucumber }}
+        <{ else }>
+            <{ if cucumber }>
                 Only if otherThing is false and cucumber are true.
-            {{ end }}
-        {{ end }}
+            <{ end }>
+        <{ end }>
         Here are some types of fruits:
-        {{ for fruit in fruits }}
-        Fruit name: {{ fruit }}
-        {{ end }}
+        <{ for fruit in fruits }>
+        Fruit name: <{ fruit }>
+        <{ end }>
 
         Here they are again:
-        {{ for fruit in fruits }}Fruit name: {{ car }} {{ end }}
+        <{ for fruit in fruits }>Fruit name: <{ car }> <{ end }>
         """
             
         XCTAssertNoThrow(try {
@@ -57,7 +57,7 @@ final class TemplateKitTests: XCTestCase {
             "thing": true
         ]
 
-        let template: Template = "{{ if thing }}Is True{{ end }}"
+        let template: Template = "<{ if thing }>Is True<{ end }>"
             
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
@@ -71,7 +71,7 @@ final class TemplateKitTests: XCTestCase {
             "otherThing": true
         ]
 
-        let template: Template = "{{ if not (thing and otherThing) }}Is True{{ end }}"
+        let template: Template = "<{ if not (thing and otherThing) }>Is True<{ end }>"
             
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
@@ -85,7 +85,7 @@ final class TemplateKitTests: XCTestCase {
             "license": "MIT"
         ]
 
-        let template: Template = "{{ if license == \"MIT\" }}Is True{{ end }}"
+        let template: Template = "<{ if license == \"MIT\" }>Is True<{ end }>"
             
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
@@ -100,11 +100,11 @@ final class TemplateKitTests: XCTestCase {
 
         let template: Template = """
         Banana
-        {{ if thing }}
+        <{ if thing }>
             Is True
-        {{ else }}
+        <{ else }>
             Is False
-        {{ end }}
+        <{ end }>
         Apple
         """
             
@@ -122,6 +122,19 @@ banan {
     hej
 }
 """
+        XCTAssertNoThrow(try {
+            let result = try template.render(context: context)
+            print(result)
+        }())
+    }
+
+    func testOneTagOnly() {
+        let context: [String: Any?] = [
+            "banana": "hej"
+        ]
+            
+        let template: Template = "<{ banana }>"
+        
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
