@@ -97,9 +97,21 @@ public class Lexer {
         guard let firstTagCharacter = configuration.tagStart.first else {
             return nil
         }
-        guard let text = scanner.scanUpToCharacters(from: CharacterSet(charactersIn: "\n\(firstTagCharacter)")) else {
+        
+        var scannedText = scanner.scanUpToCharacters(from: CharacterSet(charactersIn: "\n\(firstTagCharacter)"))
+            
+        if scannedText == nil {
+            if scanner.currentIndex != scanner.string.startIndex {
+                scannedText = nil
+            } else {
+                scannedText = ""
+            }
+        }
+        
+        guard let text = scannedText else {
             return nil
         }
+        
         if scanner.isAtEnd {
             if isWhitespaceOnly(text) {
                 return .whitespace(text)

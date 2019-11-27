@@ -141,6 +141,19 @@ banan {
         }())
     }
     
+    func testNoTagOnly() {
+        let context: [String: Any?] = [
+            "banana": "hej"
+        ]
+            
+        let template: Template = "< banana >"
+        
+        XCTAssertNoThrow(try {
+            let result = try template.render(context: context)
+            print(result)
+        }())
+    }
+    
     static var allTests = [
         ("testExample", testExample),
         ("testExampleIf", testExampleIf),
