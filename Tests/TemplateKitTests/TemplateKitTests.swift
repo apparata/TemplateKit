@@ -114,6 +114,20 @@ final class TemplateKitTests: XCTestCase {
         }())
     }
     
+    func testCode() {
+        let context: [String: Any?] = [:]
+        
+        let template: Template = """
+banan {
+    hej
+}
+"""
+        XCTAssertNoThrow(try {
+            let result = try template.render(context: context)
+            print(result)
+        }())
+    }
+    
     static var allTests = [
         ("testExample", testExample),
         ("testExampleIf", testExampleIf),

@@ -124,7 +124,11 @@ public class Lexer {
                 return .text(text)
             }
         }
-        return nil
+        // This means that we have encountered the first character of a tag
+        // start, but it's just part of the text and there is no second
+        // character from the tag.
+        _ = scanner.scanCharacter()
+        return .text(text + String(firstTagCharacter))
     }
     
     private func isWhitespaceOnly(_ string: String) -> Bool {
