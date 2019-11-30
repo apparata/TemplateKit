@@ -30,6 +30,7 @@ public enum ConditionalToken {
     case equalityOperator
 }
 
+@available(iOS 13.0, *)
 public class Lexer {
     
     public enum Error: Swift.Error {

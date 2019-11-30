@@ -14,6 +14,7 @@ statement := terminal ( '==' string )?
 
 */
 
+@available(iOS 13.0, *)
 public class ConditionParser {
     
     public enum Error: Swift.Error {

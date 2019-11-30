@@ -4,6 +4,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 public class TagParser {
     
     public enum Error: Swift.Error {

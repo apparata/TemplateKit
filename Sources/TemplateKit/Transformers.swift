@@ -6,6 +6,7 @@ import Foundation
 
 public typealias Transformer = (Any?) -> Any?
 
+@available(iOS 13.0, *)
 public struct Transformers {
     
     public static let lowercased: Transformer = { (value: Any?) -> Any? in

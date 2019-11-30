@@ -4,6 +4,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 public struct Template: ExpressibleByStringLiteral {
 
     public let templateString: String
