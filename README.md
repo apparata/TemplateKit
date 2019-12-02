@@ -7,7 +7,7 @@ Example:
 ```Swift
 let template: Template = """
 This is a test.
-<{ whatever }>
+<{ #lowercased whatever }>
 So is this.
 <{ stuff }>
 Whatever
