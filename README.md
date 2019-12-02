@@ -1,3 +1,5 @@
+![](https://github.com/apparata/TemplateKit/workflows/Swift/badge.svg)
+
 # TemplateKit
 
 Example:
