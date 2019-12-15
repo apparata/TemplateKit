@@ -42,7 +42,35 @@ final class TemplateKitTests: XCTestCase {
         <{ end }>
 
         Here they are again:
-        <{ for fruit in fruits }>Fruit name: <{ car }> <{ end }>
+        <{ for fruit in fruits }>Fruit name: <{ fruit }> <{ end }>
+        """
+            
+        XCTAssertNoThrow(try {
+            let result = try template.render(context: context)
+            print(result)
+        }())
+        
+    }
+    
+    func testNewLine() {
+        let context: [String: Any?] = [
+            "whatever": "[WHATEVER]",
+            "stuff": 1337,
+            "potato": true,
+            "cucumber": 1,
+            "otherThing": false,
+            "fruits": [
+                "banana",
+                "orange",
+                "pineapple",
+                "pear"
+            ]
+        ]
+
+        let template: Template = """
+        <{ if cucumber }>
+            <{ end }>
+        This should be at the start of the line.
         """
             
         XCTAssertNoThrow(try {
