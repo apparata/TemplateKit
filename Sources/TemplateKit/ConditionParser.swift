@@ -6,10 +6,11 @@ import Foundation
 
 /*
 
-expr      := term ('OR' term)*
-term      := factor ('AND' factor)*
-factor    := 'NOT'? ( statement | '(' expr ')' )
-statement := terminal ( '==' string )?
+expr      := term ('or' term)*
+term      := factor ('and' factor)*
+factor    := 'not'? ( statement | '(' expr ')' )
+statement := terminal ( ('==' | '!=') string )?
+string    := ('"' | ''') character* ('"' | ''')
 
 */
 
@@ -157,7 +158,7 @@ public class ConditionParser {
             return (condition: .terminal(variable: variable), index: i)
         }
         
-        if case .equalityOperator = tokens[i] {
+        if case .comparisonOperator(let comparisonOperator) = tokens[i] {
             
             i += 1
             
@@ -166,7 +167,12 @@ public class ConditionParser {
             }
             i += 1
             
-            return (condition: .terminalEqualsString(variable: variable, string: string), index: i)
+            let condition = ConditionalExpression.terminalCompareToString(
+                variable: variable,
+                string: string,
+                operator: comparisonOperator)
+            
+            return (condition: condition, index: i)
             
         } else {
             return (condition: .terminal(variable: variable), index: i)

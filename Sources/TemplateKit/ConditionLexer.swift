@@ -44,7 +44,9 @@ public class ConditionLexer {
             } else if scanner.scanString(")") != nil {
                 tokens.append(.endParenthesis)
             } else if scanner.scanString("==") != nil {
-                tokens.append(.equalityOperator)
+                tokens.append(.comparisonOperator(.equals))
+            } else if scanner.scanString("!=") != nil {
+                tokens.append(.comparisonOperator(.notEquals))
             } else if scanner.scanString("\"") != nil {
                 guard let string = scanner.scanUpToString("\"") else {
                     throw Error.invalidCondition(index: backtrackIndex)

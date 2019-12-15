@@ -19,6 +19,11 @@ public enum Tag {
     case variable(String, transformers: [String])
 }
 
+public enum ComparisonOperator {
+    case equals
+    case notEquals
+}
+
 public enum ConditionalToken {
     case not
     case and
@@ -27,7 +32,7 @@ public enum ConditionalToken {
     case endParenthesis
     case terminal(variable: String)
     case string(String)
-    case equalityOperator
+    case comparisonOperator(ComparisonOperator)
 }
 
 @available(iOS 13.0, *)

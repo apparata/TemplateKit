@@ -9,7 +9,7 @@ public indirect enum ConditionalExpression {
     case and([ConditionalExpression])
     case not(ConditionalExpression)
     case terminal(variable: String)
-    case terminalEqualsString(variable: String, string: String)
+    case terminalCompareToString(variable: String, string: String, operator: ComparisonOperator)
 }
 
 public extension ConditionalExpression {
@@ -46,10 +46,15 @@ public extension ConditionalExpression {
             }
             return false
             
-        case .terminalEqualsString(let variable, let string):
+        case .terminalCompareToString(let variable, let string, let comparisonOperator):
             if let value: Any = context[variable]?.flatMap({ $0 }) {
                 if let stringValue = value as? String {
-                    return stringValue == string
+                    switch comparisonOperator {
+                    case .equals:
+                        return stringValue == string
+                    case .notEquals:
+                        return stringValue != string
+                    }
                 } else {
                     return false
                 }

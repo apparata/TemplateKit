@@ -76,7 +76,8 @@ is the complete grammar for the conditional expression:
 expr      := term ('or' term)*
 term      := factor ('and' factor)*
 factor    := 'not'? ( statement | '(' expr ')' )
-statement := terminal ( '==' string )?
+statement := terminal ( ('==' | '!=') string )?
+string    := ('"' | ''') character* ('"' | ''')
 ```
 
 #### Example: `if not ...`
