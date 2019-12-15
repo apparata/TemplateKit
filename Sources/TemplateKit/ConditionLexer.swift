@@ -53,6 +53,14 @@ public class ConditionLexer {
                     throw Error.invalidCondition(index: backtrackIndex)
                 }
                 tokens.append(.string(string))
+            } else if scanner.scanString("'") != nil {
+                guard let string = scanner.scanUpToString("'") else {
+                    throw Error.invalidCondition(index: backtrackIndex)
+                }
+                guard scanner.scanString("'") != nil else {
+                    throw Error.invalidCondition(index: backtrackIndex)
+                }
+                tokens.append(.string(string))
             } else if let variable = scanner.scanIdentifier() {
                 tokens.append(.terminal(variable: variable))
             } else {

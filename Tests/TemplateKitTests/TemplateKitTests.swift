@@ -120,6 +120,20 @@ final class TemplateKitTests: XCTestCase {
             print(result)
         }())
     }
+
+    func testExampleIfEqualsSingleQuote() {
+        let context: [String: Any?] = [
+            "thing": false,
+            "license": "MIT"
+        ]
+
+        let template: Template = "<{ if license == 'MIT' }>Is True<{ end }>"
+            
+        XCTAssertNoThrow(try {
+            let result = try template.render(context: context)
+            print(result)
+        }())
+    }
     
     func testExampleIfElse() {
         let context: [String: Any?] = [
