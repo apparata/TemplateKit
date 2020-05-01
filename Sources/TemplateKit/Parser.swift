@@ -191,7 +191,7 @@ public class Parser {
     private func isTagNewlineSensitive(_ tag: Tag) -> Bool {
         switch tag {
         case .if(_), .for(_, _), .else, .end: return true
-        case .variable(_): return false
+        case .variable(_, _): return false
         }
     }
 }
