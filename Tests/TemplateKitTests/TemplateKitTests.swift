@@ -52,6 +52,61 @@ final class TemplateKitTests: XCTestCase {
         
     }
     
+    func testExample2() {
+        
+        struct Fruit {
+            let name: String
+        }
+        
+        let context: [String: Any?] = [
+            "whatever": "[WHATEVER]",
+            "stuff": 1337,
+            "potato": true,
+            "cucumber": 1,
+            "otherThing": false,
+            "fruits": [
+                Fruit(name: "banana"),
+                Fruit(name: "orange"),
+                Fruit(name: "pineapple"),
+                Fruit(name: "pear")
+            ]
+        ]
+
+        let template: Template = """
+        This is a test.
+        <{ #lowercased whatever }>
+        So is this.
+        <{ stuff }>
+        Whatever
+        <{ if potato }>
+            Only if potato is true.
+            <{ if cucumber }>
+                Only if both potato and cucumber are true.
+            <{ end }>
+        <{ end }>
+        <{ if otherThing }>
+            Only if otherThing is true.
+        <{ else }>
+            <{ if cucumber }>
+                Only if otherThing is false and cucumber are true.
+            <{ end }>
+        <{ end }>
+        Here are some types of fruits:
+        <{ for fruit in fruits }>
+        Fruit name: <{ fruit.name }>
+        <{ end }>
+
+        Here they are again:
+        <{ for fruit in fruits }>Fruit name: <{ fruit.name }> <{ end }>
+        """
+            
+        XCTAssertNoThrow(try {
+            let result = try template.render(context: context)
+            print(result)
+        }())
+        
+    }
+    
     func testNewLine() {
         let context: [String: Any?] = [
             "whatever": "[WHATEVER]",
@@ -218,7 +273,16 @@ banan {
     
     static var allTests = [
         ("testExample", testExample),
+        ("testExample2", testExample2),
+        ("testNewLine", testNewLine),
         ("testExampleIf", testExampleIf),
+        ("testExampleIfNot", testExampleIfNot),
+        ("testExampleIfEquals", testExampleIfEquals),
+        ("testExampleIfEqualsSingleQuote", testExampleIfEqualsSingleQuote),
+        ("testExampleIfNotEqualsSingleQuote", testExampleIfNotEqualsSingleQuote),
         ("testExampleIfElse", testExampleIfElse),
+        ("testCode", testCode),
+        ("testOneTagOnly", testOneTagOnly),
+        ("testNoTagOnly", testNoTagOnly)
     ]
 }

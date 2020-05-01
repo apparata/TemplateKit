@@ -17,11 +17,11 @@ public class TextNode: Node {
 }
 
 public class VariableNode: Node {
-    let variable: String
+    let path: [String]
     let transformers: [String]
     
-    public init(variable: String, transformers: [String]) {
-        self.variable = variable
+    public init(path: [String], transformers: [String]) {
+        self.path = path
         self.transformers = transformers
     }
 }

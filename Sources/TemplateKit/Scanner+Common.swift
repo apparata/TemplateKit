@@ -19,6 +19,19 @@ extension Scanner {
     }
 
     @discardableResult
+    func scanPath() -> [String]? {
+        var path: [String] = []
+        let dotSet = CharacterSet(charactersIn: ".")
+        while let identifier = scanIdentifier() {
+            path.append(identifier)
+            guard let dot = scanCharacters(from: dotSet), dot.count == 1 else {
+                break
+            }
+        }
+        return path.isEmpty ? nil : path
+    }
+    
+    @discardableResult
     func scanKeyword(_ keyword: String) -> String? {
         let backtrackIndex = currentIndex
         let characters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "_"))

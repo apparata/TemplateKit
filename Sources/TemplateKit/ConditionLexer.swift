@@ -63,8 +63,8 @@ public class ConditionLexer {
                     throw Error.invalidCondition(index: backtrackIndex)
                 }
                 tokens.append(.string(string))
-            } else if let variable = scanner.scanIdentifier() {
-                tokens.append(.terminal(variable: variable))
+            } else if let path = scanner.scanPath() {
+                tokens.append(.terminal(path))
             } else {
                 throw Error.invalidCondition(index: backtrackIndex)
             }

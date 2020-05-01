@@ -123,7 +123,7 @@ public class TagParser {
         
         let transformers = try scanTransformers(scanner)
         
-        guard let variable = scanner.scanIdentifier() else {
+        guard let path = scanner.scanPath() else {
             scanner.currentIndex = backtrackIndex
             return nil
         }
@@ -131,7 +131,7 @@ public class TagParser {
         guard scanner.isAtEnd else {
             throw Error.invalidTag(index: backtrackIndex)
         }
-        return .variable(variable, transformers: transformers)
+        return .variable(path: path, transformers: transformers)
     }
     
     private func scanTransformers(_ scanner: Scanner) throws -> [String] {

@@ -22,6 +22,20 @@ try template.render(context: [
 ])
 ```
 
+## Nested Value
+
+```Swift
+let template: Template = "This fruit is named <{ fruit.name }>"
+
+struct Fruit {
+    let name: String
+}
+
+try template.render(context: [
+    "fruit": Fruit(name: "banana")
+])
+```
+
 ### Built-in Transformers
 
 - `#lowercased`

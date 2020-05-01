@@ -16,7 +16,7 @@ public enum Tag {
     case `for`(variable: String, sequence: String)
     case `else`
     case end
-    case variable(String, transformers: [String])
+    case variable(path: [String], transformers: [String])
 }
 
 public enum ComparisonOperator {
@@ -30,7 +30,7 @@ public enum ConditionalToken {
     case or
     case startParenthesis
     case endParenthesis
-    case terminal(variable: String)
+    case terminal([String])
     case string(String)
     case comparisonOperator(ComparisonOperator)
 }

@@ -6,11 +6,7 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class Renderer {
-    
-    public enum Error: Swift.Error {
-        case unsupportedValueType(Any)
-    }
-    
+        
     public init() {
         //
     }
@@ -40,7 +36,7 @@ public class Renderer {
             if let textNode = node as? TextNode {
                 parts.append(textNode.text)
             } else if let variableNode = node as? VariableNode {
-                var value: Any? = context[variableNode.variable] ?? nil
+                var value: Any? = try contextValue(at: variableNode.path, node: context)
                 for transformID in variableNode.transformers {
                     if let transform = context[transformID] as? ((Any?) -> Any?) {
                         value = transform(value)
@@ -50,7 +46,7 @@ public class Renderer {
                     parts.append(part)
                 }
             } else if let ifNode = node as? IfNode {
-                if ifNode.condition.evaluate(with: context) {
+                if try ifNode.condition.evaluate(with: context) {
                     parts.append(contentsOf: try renderParts(nodes: ifNode.children,
                                                              context: context))
                 } else {
@@ -71,5 +67,5 @@ public class Renderer {
         }
         
         return parts
-    }
+    }    
 }

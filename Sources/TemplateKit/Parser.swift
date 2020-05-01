@@ -39,8 +39,8 @@ public class Parser {
                 
             case .tag(let tag):
                 switch tag {
-                case .variable(let variable, let transformers):
-                    let node = VariableNode(variable: variable, transformers: transformers)
+                case .variable(let path, let transformers):
+                    let node = VariableNode(path: path, transformers: transformers)
                     nodes.append(node)
                     i += 1
                 case .if(_):

@@ -149,13 +149,13 @@ public class ConditionParser {
 
         var i = index
         
-        guard case let .terminal(variable) = tokens[i] else {
+        guard case let .terminal(path) = tokens[i] else {
             throw Error.parseConditionalFailed
         }
         i += 1
         
         if i == tokens.count {
-            return (condition: .terminal(variable: variable), index: i)
+            return (condition: .terminal(path: path), index: i)
         }
         
         if case .comparisonOperator(let comparisonOperator) = tokens[i] {
@@ -168,14 +168,14 @@ public class ConditionParser {
             i += 1
             
             let condition = ConditionalExpression.terminalCompareToString(
-                variable: variable,
+                path: path,
                 string: string,
                 operator: comparisonOperator)
             
             return (condition: condition, index: i)
             
         } else {
-            return (condition: .terminal(variable: variable), index: i)
+            return (condition: .terminal(path: path), index: i)
         }
 
     }

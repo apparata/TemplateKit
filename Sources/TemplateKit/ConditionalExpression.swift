@@ -8,18 +8,18 @@ public indirect enum ConditionalExpression {
     case or([ConditionalExpression])
     case and([ConditionalExpression])
     case not(ConditionalExpression)
-    case terminal(variable: String)
-    case terminalCompareToString(variable: String, string: String, operator: ComparisonOperator)
+    case terminal(path: [String])
+    case terminalCompareToString(path: [String], string: String, operator: ComparisonOperator)
 }
 
 public extension ConditionalExpression {
     
-    func evaluate(with context: [String: Any?]) -> Bool {
+    func evaluate(with context: [String: Any?]) throws -> Bool {
         switch self {
             
         case .or(let conditions):
             for condition in conditions {
-                if condition.evaluate(with: context) {
+                if try condition.evaluate(with: context) {
                     return true
                 }
             }
@@ -27,17 +27,17 @@ public extension ConditionalExpression {
             
         case .and(let conditions):
             for condition in conditions {
-                if !condition.evaluate(with: context) {
+                if try !condition.evaluate(with: context) {
                     return false
                 }
             }
             return true
         
         case .not(let condition):
-            return !condition.evaluate(with: context)
+            return try !condition.evaluate(with: context)
         
-        case .terminal(let variable):
-            if let value: Any = context[variable]?.flatMap({ $0 }) {
+        case .terminal(let path):
+            if let value: Any = try contextValue(at: path, node: context).flatMap({ $0 }) {
                 if let booleanValue = value as? Bool {
                     return booleanValue
                 } else {
@@ -46,8 +46,8 @@ public extension ConditionalExpression {
             }
             return false
             
-        case .terminalCompareToString(let variable, let string, let comparisonOperator):
-            if let value: Any = context[variable]?.flatMap({ $0 }) {
+        case .terminalCompareToString(let path, let string, let comparisonOperator):
+            if let value: Any = try contextValue(at: path, node: context).flatMap({ $0 }) {
                 if let stringValue = value as? String {
                     switch comparisonOperator {
                     case .equals:
