@@ -1,7 +1,3 @@
-//
-//  Copyright © 2019 Apparata AB. All rights reserved.
-//
-
 import Foundation
 
 public class Node {
@@ -53,5 +49,13 @@ public class ForNode: Node {
         self.variable = variable
         self.sequence = sequence
         self.children = children
+    }
+}
+
+public class ImportNode: Node {
+    let file: String
+
+    public init(file: String) {
+        self.file = file
     }
 }

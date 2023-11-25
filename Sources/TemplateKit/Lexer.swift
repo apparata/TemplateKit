@@ -1,7 +1,3 @@
-//
-//  Copyright © 2019 Apparata AB. All rights reserved.
-//
-
 import Foundation
 
 public enum Token {
@@ -16,6 +12,7 @@ public enum Tag {
     case `for`(variable: String, sequence: String)
     case `else`
     case end
+    case `import`(file: String)
     case variable(path: [String], transformers: [String])
 }
 
@@ -35,7 +32,6 @@ public enum ConditionalToken {
     case comparisonOperator(ComparisonOperator)
 }
 
-@available(iOS 13.0, *)
 public class Lexer {
     
     public enum Error: Swift.Error {

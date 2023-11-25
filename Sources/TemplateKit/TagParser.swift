@@ -1,10 +1,5 @@
-//
-//  Copyright © 2019 Apparata AB. All rights reserved.
-//
-
 import Foundation
 
-@available(iOS 13.0, *)
 public class TagParser {
     
     public enum Error: Swift.Error {
@@ -14,7 +9,9 @@ public class TagParser {
     public init() {
         //
     }
-    
+
+    // MARK: Parse
+
     public func parse(_ string: String) throws -> Tag {
         
         let scanner = Scanner(string: string)
@@ -31,13 +28,17 @@ public class TagParser {
             return tag
         } else if let tag = try scanEnd(scanner) {
             return tag
+        } else if let tag = try scanImport(scanner) {
+            return tag
         } else if let tag = try scanVariable(scanner) {
             return tag
         } else {
             throw Error.invalidTag(index: scanner.currentIndex)
         }
     }
-    
+
+    // MARK: Scan If
+
     private func scanIf(_ scanner: Scanner) throws -> Tag? {
         let backtrackIndex = scanner.currentIndex
         guard scanner.scanString("if") != nil else {
@@ -57,7 +58,9 @@ public class TagParser {
         
         return .if(condition: condition)
     }
-    
+
+    // MARK: Scan For
+
     private func scanFor(_ scanner: Scanner) throws -> Tag? {
         let backtrackIndex = scanner.currentIndex
         guard scanner.scanString("for") != nil else {
@@ -94,6 +97,8 @@ public class TagParser {
         return .for(variable: variable, sequence: sequence)
     }
 
+    // MARK: Scan Else
+
     private func scanElse(_ scanner: Scanner) throws -> Tag? {
         let backtrackIndex = scanner.currentIndex
         guard scanner.scanString("else") != nil else {
@@ -105,7 +110,9 @@ public class TagParser {
         }
         return .else
     }
-    
+
+    // MARK: Scan End
+
     private func scanEnd(_ scanner: Scanner) throws -> Tag? {
         let backtrackIndex = scanner.currentIndex
         guard scanner.scanString("end") != nil else {
@@ -117,6 +124,51 @@ public class TagParser {
         }
         return .end
     }
+
+    // MARK: Scan Import
+
+    private func scanImport(_ scanner: Scanner) throws -> Tag? {
+        let backtrackIndex = scanner.currentIndex
+        guard scanner.scanString("import") != nil else {
+            return nil
+        }
+
+        guard scanner.scanWhiteSpace() != nil else {
+            if scanner.isAtEnd {
+                throw Error.invalidTag(index: backtrackIndex)
+            }
+            scanner.currentIndex = backtrackIndex
+            return nil
+        }
+
+        guard scanner.scanString("\"") != nil else {
+            if scanner.isAtEnd {
+                throw Error.invalidTag(index: backtrackIndex)
+            }
+            scanner.currentIndex = backtrackIndex
+            return nil
+        }
+
+        guard let file = scanner.scanUpToCharacters(from: CharacterSet(arrayLiteral: "\"", "\n")) else {
+            if scanner.isAtEnd {
+                throw Error.invalidTag(index: backtrackIndex)
+            }
+            scanner.currentIndex = backtrackIndex
+            return nil
+        }
+
+        guard scanner.scanString("\"") != nil else {
+            if scanner.isAtEnd {
+                throw Error.invalidTag(index: backtrackIndex)
+            }
+            scanner.currentIndex = backtrackIndex
+            return nil
+        }
+
+        return .import(file: file)
+    }
+
+    // MARK: Scan Variable
 
     private func scanVariable(_ scanner: Scanner) throws -> Tag? {
         let backtrackIndex = scanner.currentIndex
@@ -134,6 +186,8 @@ public class TagParser {
         return .variable(path: path, transformers: transformers)
     }
     
+    // MARK: Scan Transformers
+
     private func scanTransformers(_ scanner: Scanner) throws -> [String] {
         
         let backtrackIndex = scanner.currentIndex

@@ -132,7 +132,6 @@ final class TemplateKitTests: XCTestCase {
             let result = try template.render(context: context)
             print(result)
         }())
-        
     }
     
     func testExampleIf() {

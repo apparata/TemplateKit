@@ -1,10 +1,5 @@
-//
-//  Copyright © 2019 Apparata AB. All rights reserved.
-//
-
 import Foundation
 
-@available(iOS 13.0, *)
 public class Parser {
         
     public enum Error: Swift.Error {
@@ -43,11 +38,11 @@ public class Parser {
                     let node = VariableNode(path: path, transformers: transformers)
                     nodes.append(node)
                     i += 1
-                case .if(_):
+                case .if:
                     let (node, newIndex) = try parseIf(tokens, index: i, level: level + 1)
                     nodes.append(node)
                     i = newIndex
-                case .for(_, _):
+                case .for:
                     let (node, newIndex) = try parseFor(tokens, index: i, level: level + 1)
                     nodes.append(node)
                     i = newIndex
@@ -65,6 +60,10 @@ public class Parser {
                     }
                     i += 1
                     return (nodes: nodes, index: i)
+                case .import:
+                    let node = try parseImport(tokens, index: i)
+                    nodes.append(node)
+                    i += 1
                 }
 
             case .newline:
@@ -136,7 +135,18 @@ public class Parser {
         
         return (ForNode(variable: variable, sequence: sequence, children: nodes), i)
     }
-    
+
+    private func parseImport(_ tokens: [Token], index: Int) throws -> ImportNode {
+
+        let token = tokens[index]
+        guard case .tag(let tag) = token,
+              case .import(let file) = tag else {
+            throw Error.unexpectedToken(token)
+        }
+
+        return ImportNode(file: file)
+    }
+
     private func removeUnwantedNewlines(from tokens: [Token]) -> [Token] {
         
         // There are definitely smarter ways to do this. :)
@@ -151,25 +161,29 @@ public class Parser {
         for token in tokens {
             switch token {
             case .newline:
-                if case .newline = tokenMinus2,
+                if case .tag(let tag) = tokenMinus1,
+                   isTagNewlineSensitive(tag),
+                    tokenMinus2 == nil {
+                    // This newline is redundant.
+                } else if case .newline = tokenMinus2,
                     case .tag(let tag) = tokenMinus1,
                     isTagNewlineSensitive(tag) {
                     // This newline is redundant.
                 } else if case .newline = tokenMinus3,
                     case .tag(let tag) = tokenMinus2,
                     isTagNewlineSensitive(tag),
-                    case .whitespace(_) = tokenMinus1 {
+                    case .whitespace = tokenMinus1 {
                     // This newline is redundant
                 } else if case .newline = tokenMinus3,
-                    case .whitespace(_) = tokenMinus2,
+                    case .whitespace = tokenMinus2,
                     case .tag(let tag) = tokenMinus1,
                     isTagNewlineSensitive(tag) {
                     // This newline is redundant
                 } else if case .newline = tokenMinus4,
-                    case .whitespace(_) = tokenMinus3,
+                    case .whitespace = tokenMinus3,
                     case .tag(let tag) = tokenMinus2,
                     isTagNewlineSensitive(tag),
-                    case .whitespace(_) = tokenMinus1 {
+                    case .whitespace = tokenMinus1 {
                     // This newline is redundant
                 } else {
                     filteredTokens.append(token)
@@ -190,7 +204,7 @@ public class Parser {
     
     private func isTagNewlineSensitive(_ tag: Tag) -> Bool {
         switch tag {
-        case .if(_), .for(_, _), .else, .end: return true
+        case .if(_), .for(_, _), .else, .end, .import: return true
         case .variable(_, _): return false
         }
     }

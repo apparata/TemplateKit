@@ -157,6 +157,14 @@ try template.render(context: [
 ])
 ```
 
+## Import Templates
+
+```Swift
+let template: Template = """
+<{ import "../Common/Content.txt" }>
+"""
+```
+
 ## Longer Example:
 
 ```Swift

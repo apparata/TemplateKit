@@ -1,10 +1,5 @@
-//
-//  Copyright © 2019 Apparata AB. All rights reserved.
-//
-
 import Foundation
 
-@available(iOS 13.0, *)
 public class ConditionLexer {
     
     public enum Error: Swift.Error {

@@ -1,7 +1,3 @@
-//
-//  Copyright © 2020 Apparata AB. All rights reserved.
-//
-
 import Foundation
 
 func contextValue(at path: [String], node: Any?) throws -> Any? {

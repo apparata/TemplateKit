@@ -1,14 +1,14 @@
-//
-//  Copyright © 2019 Apparata AB. All rights reserved.
-//
-
 import Foundation
 
-@available(iOS 13.0, *)
 public class Renderer {
         
-    public init() {
-        //
+    public let lexerConfiguration: Lexer.Configuration
+
+    public let root: URL?
+
+    public init(lexerConfiguration: Lexer.Configuration = Lexer.Configuration(), root: URL? = nil) {
+        self.lexerConfiguration = lexerConfiguration
+        self.root = root
     }
 
     public func render(nodes: [Node], context: [String: Any?]) throws -> String {
@@ -16,7 +16,7 @@ public class Renderer {
     }
     
     private func renderParts(nodes: [Node], context userContext: [String: Any?]) throws -> [String] {
-        
+
         var context: [String: Any?] = [
             "lowercased": Transformers.lowercased,
             "uppercased": Transformers.uppercased,
@@ -63,6 +63,16 @@ public class Renderer {
                         parts.append(contentsOf: try renderParts(nodes: forNode.children, context: newContext))
                     }
                 }
+            } else if let importNode = node as? ImportNode {
+                let url: URL
+                if let root {
+                    url = root.appending(path: importNode.file)
+                } else {
+                    url = URL(file: importNode.file)
+                }
+                let template = try Template(contentsOf: url, lexerConfiguration: lexerConfiguration)
+                let part = try template.render(context: context, root: root)
+                parts.append(part)
             }
         }
         

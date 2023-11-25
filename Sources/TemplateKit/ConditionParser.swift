@@ -1,7 +1,3 @@
-//
-//  Copyright © 2019 Apparata AB. All rights reserved.
-//
-
 import Foundation
 
 /*
@@ -14,7 +10,6 @@ string    := ('"' | ''') character* ('"' | ''')
 
 */
 
-@available(iOS 13.0, *)
 public class ConditionParser {
     
     public enum Error: Swift.Error {
