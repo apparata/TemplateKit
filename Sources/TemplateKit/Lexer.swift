@@ -9,7 +9,7 @@ public enum Token {
 
 public enum Tag {
     case `if`(condition: ConditionalExpression)
-    case `for`(variable: String, sequence: String)
+    case `for`(variable: String, sequence: [String])
     case `else`
     case end
     case `import`(file: String)

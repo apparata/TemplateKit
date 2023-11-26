@@ -87,7 +87,7 @@ public class TagParser {
         guard scanner.scanWhiteSpace() != nil else {
             throw Error.invalidTag(index: backtrackIndex)
         }
-        guard let sequence = scanner.scanIdentifier() else {
+        guard let sequence = scanner.scanPath() else {
             throw Error.invalidTag(index: backtrackIndex)
         }
         scanner.scanWhiteSpace()

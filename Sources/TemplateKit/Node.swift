@@ -42,10 +42,10 @@ public class ElseNode: Node {
 
 public class ForNode: Node {
     let variable: String
-    let sequence: String
+    let sequence: [String]
     let children: [Node]
     
-    public init(variable: String, sequence: String, children: [Node]) {
+    public init(variable: String, sequence: [String], children: [Node]) {
         self.variable = variable
         self.sequence = sequence
         self.children = children

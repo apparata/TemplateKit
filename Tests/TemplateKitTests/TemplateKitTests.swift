@@ -14,6 +14,13 @@ final class TemplateKitTests: XCTestCase {
                 "orange",
                 "pineapple",
                 "pear"
+            ],
+            "nestedCars": [
+                "cars": [
+                    "Volvo",
+                    "Saab",
+                    "Ferrari"
+                ]
             ]
         ]
 
@@ -35,6 +42,10 @@ final class TemplateKitTests: XCTestCase {
             <{ if cucumber }>
                 Only if otherThing is false and cucumber are true.
             <{ end }>
+        <{ end }>
+        Here are some types of cars:
+        <{ for car in nestedCars.cars }>
+        Car name: <{ car }>
         <{ end }>
         Here are some types of fruits:
         <{ for fruit in fruits }>

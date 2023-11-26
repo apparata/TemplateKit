@@ -56,7 +56,7 @@ public class Renderer {
                     }
                 }
             } else if let forNode = node as? ForNode {
-                if let sequence: Array<Any> = context[forNode.sequence]?.flatMap({ $0 as? Array<Any> }) {
+                if let sequence: Array<Any> = (try contextValue(at: forNode.sequence, node: context)).flatMap({ $0 as? Array<Any> }) {
                     for value in sequence {
                         var newContext = context
                         newContext[forNode.variable] = value
