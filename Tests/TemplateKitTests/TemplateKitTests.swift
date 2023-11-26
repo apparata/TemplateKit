@@ -270,6 +270,32 @@ banan {
         }())
     }
 
+    func testURLConditional() {
+        let context: [String: Any?] = [
+            "url": URL(string: "https://google.com")
+        ]
+
+        let template: Template = """
+        <{ if url == "" }>
+        URL is empty.
+        <{ end }>
+        <{ if url != "" }>
+        URL is not empty.
+        <{ end }>
+        <{ if url == "https://google.com" }>
+        URL is https://google.com
+        <{ end }>
+        <{ if url != "https://google.com" }>
+        URL is not https://google.com
+        <{ end }>
+        """
+
+        XCTAssertNoThrow(try {
+            let result = try template.render(context: context)
+            print(result)
+        }())
+    }
+
     func testOptionalVariable() {
         struct Fruit {
             struct Peel {
