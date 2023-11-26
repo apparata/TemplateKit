@@ -44,20 +44,20 @@ final class TemplateKitTests: XCTestCase {
         Here they are again:
         <{ for fruit in fruits }>Fruit name: <{ fruit }> <{ end }>
         """
-            
+
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
         }())
-        
+
     }
-    
+
     func testExample2() {
-        
+
         struct Fruit {
             let name: String
         }
-        
+
         let context: [String: Any?] = [
             "whatever": "[WHATEVER]",
             "stuff": 1337,
@@ -99,14 +99,14 @@ final class TemplateKitTests: XCTestCase {
         Here they are again:
         <{ for fruit in fruits }>Fruit name: <{ fruit.name }> <{ end }>
         """
-            
+
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
         }())
-        
+
     }
-    
+
     func testNewLine() {
         let context: [String: Any?] = [
             "whatever": "[WHATEVER]",
@@ -127,20 +127,20 @@ final class TemplateKitTests: XCTestCase {
             <{ end }>
         This should be at the start of the line.
         """
-            
+
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
         }())
     }
-    
+
     func testExampleIf() {
         let context: [String: Any?] = [
             "thing": true
         ]
 
         let template: Template = "<{ if thing }>Is True<{ end }>"
-            
+
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
@@ -154,7 +154,7 @@ final class TemplateKitTests: XCTestCase {
         ]
 
         let template: Template = "<{ if not (thing and otherThing) }>Is True<{ end }>"
-            
+
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
@@ -168,7 +168,7 @@ final class TemplateKitTests: XCTestCase {
         ]
 
         let template: Template = "<{ if license == \"MIT\" }>Is True<{ end }>"
-            
+
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
@@ -182,13 +182,13 @@ final class TemplateKitTests: XCTestCase {
         ]
 
         let template: Template = "<{ if license == 'MIT' }>Is True<{ end }>"
-            
+
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
         }())
     }
-    
+
     func testExampleIfNotEqualsSingleQuote() {
         let context: [String: Any?] = [
             "license": "Unlicense"
@@ -199,13 +199,13 @@ final class TemplateKitTests: XCTestCase {
         <{ if not (license == 'Unlicense') }><{ license }><{ end }>
         <{ if license != 'MIT' }>Not MIT<{ end }>
         """
-            
+
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
         }())
     }
-    
+
     func testExampleIfElse() {
         let context: [String: Any?] = [
             "thing": false
@@ -220,16 +220,16 @@ final class TemplateKitTests: XCTestCase {
         <{ end }>
         Apple
         """
-            
+
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
         }())
     }
-    
+
     func testCode() {
         let context: [String: Any?] = [:]
-        
+
         let template: Template = """
 banan {
     hej
@@ -245,31 +245,88 @@ banan {
         let context: [String: Any?] = [
             "banana": "hej"
         ]
-            
+
         let template: Template = "<{ banana }>"
-        
+
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
         }())
     }
-    
+
     func testNoTagOnly() {
         let context: [String: Any?] = [
             "banana": "hej"
         ]
-            
+
         let template: Template = """
 <banana>
 <gurka>
 """
-        
+
         XCTAssertNoThrow(try {
             let result = try template.render(context: context)
             print(result)
         }())
     }
-    
+
+    func testOptionalVariable() {
+        struct Fruit {
+            struct Peel {
+                let color: String?
+            }
+            let name: String
+            let peel: Peel?
+        }
+
+        let banana = Fruit(name: "Banana", peel: nil)
+        let apple = Fruit(name: "Apple", peel: .init(color: nil))
+        let orange = Fruit(name: "Orange", peel: .init(color: "orange"))
+
+        let context: [String: Any?] = [
+            "banana": banana,
+            "apple": apple,
+            "orange": orange,
+            "text": "stuff"
+        ]
+
+        let template: Template = """
+            |<{banana.peel.color}>|
+            |<{apple.peel.color}>|
+            |<{orange.peel.color}>|
+            <{ if banana.peel.color == "" }>
+            True
+            <{ else }>
+            False
+            <{ end }>
+            <{ if banana.peel.color != "" }>
+            True
+            <{ else }>
+            False
+            <{ end }>
+            <{ if orange.peel.color == "" }>
+            True
+            <{ else }>
+            False
+            <{ end }>
+            <{ if orange.peel.color != "" }>
+            True
+            <{ else }>
+            False
+            <{ end }>
+            <{ if orange.peel.color == "orange" }>
+            True
+            <{ else }>
+            False
+            <{ end }>
+            """
+
+        XCTAssertNoThrow(try {
+            let result = try template.render(context: context)
+            print(result)
+        }())
+    }
+
     static var allTests = [
         ("testExample", testExample),
         ("testExample2", testExample2),
@@ -282,6 +339,7 @@ banan {
         ("testExampleIfElse", testExampleIfElse),
         ("testCode", testCode),
         ("testOneTagOnly", testOneTagOnly),
-        ("testNoTagOnly", testNoTagOnly)
+        ("testNoTagOnly", testNoTagOnly),
+        ("testOptionalVariable", testOptionalVariable)
     ]
 }

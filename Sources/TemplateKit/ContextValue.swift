@@ -17,22 +17,34 @@ func contextValue(at path: [String], node: Any?) throws -> Any? {
         guard let dictionary = node as? [String: Any?] else {
             throw TemplateError.invalidDictionary
         }
-        guard let nextNode = dictionary[path[0]] else {
+        let immediatePath = path[0]
+        guard let nextNode = dictionary[immediatePath] else {
             throw TemplateError.invalidPath(path: path)
         }
-        return try contextValue(at: Array(path.dropFirst()), node: nextNode)
+        let remainingPath = Array(path.dropFirst())
+        return try contextValue(at: remainingPath, node: nextNode)
 
     case .class:
         if path.isEmpty {
             return node
         }
-        return try contextValue(at: Array(path.dropFirst()), node: mirror.descendant(path[0]))
+        let remainingPath = Array(path.dropFirst())
+        let immediatePath = path[0]
+        let nextNode = mirror.descendant(immediatePath)
+        return try contextValue(at: remainingPath, node: nextNode)
+
+    case .optional:
+        let nextNode = mirror.descendant("some")
+        return try contextValue(at: path, node: nextNode)
 
     case .struct:
         if path.isEmpty {
             return node
         }
-        return try contextValue(at: Array(path.dropFirst()), node: mirror.descendant(path[0]))
+        let remainingPath = Array(path.dropFirst())
+        let immediatePath = path[0]
+        let nextNode = mirror.descendant(immediatePath)
+        return try contextValue(at: remainingPath, node: nextNode)
 
     default:
         guard path.isEmpty else {

@@ -54,8 +54,21 @@ public extension ConditionalExpression {
                 } else {
                     return false
                 }
+            } else {
+                // Value is nil
+                switch comparisonOperator {
+                case .equals where string == "":
+                    return true
+                case .equals where string != "":
+                    return false
+                case .notEquals where string == "":
+                    return false
+                case .notEquals where string != "":
+                    return true
+                default:
+                    return false
+                }
             }
-            return false
         }
     }
 }

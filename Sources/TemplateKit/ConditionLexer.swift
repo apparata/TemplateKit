@@ -43,17 +43,13 @@ public class ConditionLexer {
             } else if scanner.scanString("!=") != nil {
                 tokens.append(.comparisonOperator(.notEquals))
             } else if scanner.scanString("\"") != nil {
-                guard let string = scanner.scanUpToString("\"") else {
-                    throw Error.invalidCondition(index: backtrackIndex)
-                }
+                let string = scanner.scanUpToString("\"") ?? ""
                 guard scanner.scanString("\"") != nil else {
                     throw Error.invalidCondition(index: backtrackIndex)
                 }
                 tokens.append(.string(string))
             } else if scanner.scanString("'") != nil {
-                guard let string = scanner.scanUpToString("'") else {
-                    throw Error.invalidCondition(index: backtrackIndex)
-                }
+                let string = scanner.scanUpToString("'") ?? ""
                 guard scanner.scanString("'") != nil else {
                     throw Error.invalidCondition(index: backtrackIndex)
                 }
